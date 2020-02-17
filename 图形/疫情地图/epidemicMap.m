@@ -100,11 +100,14 @@ clearvars cor1 epidemic;
 
 disp("各省疫情情况：");
 ta.Properties.VariableNames = {'省','市','确诊','怀疑','治愈','死亡'};
+ta{end+1, 1} = {'总计'};
+ta(end, 3:6) = array2table( sum(ta{:, 3:6}) );
 ta = sortrows(ta, "确诊", "descend")
+
 n = inputdlg("省名或省序号(1~34)：","输入",1,"湖北省");
 if ~isempty(n)
     idx1 = strcmp(n{1}, ta.('省'));
-    idx2 = (str2double(n{1}) == 1:s1(1))';
+    idx2 = (str2double(n{1})+1 == 1:s1(1)+1)';
     idx = find(idx1 + idx2);
     disp(ta{idx, '省'} + "各市疫情情况：");
     tb = ta{idx, '市'}{1};
