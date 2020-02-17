@@ -98,10 +98,10 @@ hold off;
 ta = epidemic(:, 1:6);
 clearvars cor1 epidemic;
 
-disp("各省疫情情况：");
 ta.Properties.VariableNames = {'省','市','确诊','怀疑','治愈','死亡'};
 ta{end+1, 1} = {'总计'};
 ta(end, 3:6) = array2table( sum(ta{:, 3:6}) );
+disp("各省疫情情况：");
 ta = sortrows(ta, "确诊", "descend")
 
 n = inputdlg("省名或省序号(1~34)：","输入",1,"湖北省");
