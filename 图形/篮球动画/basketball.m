@@ -9,7 +9,7 @@ z2 = 3; % 球筐z高度 m
 R = 7; % 三分线距离 m
 % 动画参数
 dii = .02; % 动画间隔
-dF = .02; % 帧间隔
+dF = .04; % 帧间隔
 dt = .05; % gif动图延迟时间 s
 figure('Position',[0 40 1550 750]);
 axes('Projection','perspective');
