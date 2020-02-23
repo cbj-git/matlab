@@ -2,11 +2,15 @@
 % 初始设置
 
 close all;clear;clc;
-g = 9.8; % 重力加速度
-r1 = .5; % 篮球半径
-r2 = .7; % 球筐半径
-z2 = 3; % 球筐z高度
-R = 7; % 三分线距离
+g = 9.8; % 重力加速度 m^2/s
+r1 = .5; % 篮球半径 m
+r2 = .7; % 球筐半径 m
+z2 = 3; % 球筐z高度 m
+R = 7; % 三分线距离 m
+% 动画参数
+dii = .02; % 动画间隔
+dF = .02; % 帧间隔
+dt = .05; % gif动图延迟时间 s
 figure('Position',[0 40 1550 750]);
 axes('Projection','perspective');
 view([100 15]); axis equal; grid on;
@@ -20,7 +24,7 @@ axis([-R-1 R+1 -1 R+1 0 z2+R]);
 opts.Resize = 'off';
 % opts.WindowStyle = 'modal';
 % opts.Interpreter = 'tex';
-se = inputdlg({'是否保存动画(y或n, 分别代表是或否):', '出手点位置(m, 其中y>0, 如2个出手点[0 7 2; 3 4 2])', '速度(m/s, [v1 v2 ...]):',...
+se = inputdlg({'是否保存gif动图(y或n, 分别代表是或否):', '出手点位置(m, 其中y>0, 如2个出手点[0 7 2; 3 4 2])', '速度(m/s, [v1 v2 ...]):',...
     '角度(\circ, 0~90, [th1 th2 ...])'}, '输入', ones(1,4), {'n', '[3 6 2; 7 0 2]', '[10 12]', '[60 70]'}, opts);
 if isempty(se)
     disp('您已取消输入！');
@@ -99,15 +103,12 @@ end
 %%
 % 动画
 
-% 保存动画
+% 保存gif动图
 pause(1);
 yes = strcmp(se{1}, 'y');
-if yes
-    aviobj=VideoWriter('basketball.avi', 'Motion JPEG AVI'); % 新建叫basketball.avi的文件
-    open(aviobj); % 打开basketball.avi的文件
-end
+
 % 动画
-for ii = 0:.02:max(posy)+1
+for ii = 0:dii:max(posy)+1
     for jj = 1:num
         % 绕x轴旋转
         Trx = makehgtform('xrotate', -ii*pi);
@@ -124,12 +125,14 @@ for ii = 0:.02:max(posy)+1
     end
     drawnow;
     % 写入帧
-    if yes
-        writeVideo(aviobj, getframe(gcf));
+    if yes && rem(ii, dF) == 0
+        F=getframe(gcf);
+    	im = frame2im(F);
+        [im, map] = rgb2ind(im, 256);
+        if ii == 0
+            imwrite(im,map, 'basketball.gif','gif', 'Loopcount',inf, 'DelayTime',dt);
+        else
+          	imwrite(im,map, 'basketball.gif','gif', 'WriteMode','append', 'DelayTime',dt);
+        end
     end
-end
-% 关闭
-if yes
-    close(aviobj);
-    disp('保存成功！');
 end
